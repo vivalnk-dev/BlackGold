@@ -4,7 +4,7 @@ package model;
  * Created by Huy on 6/25/18.
  */
 public class TestParameters {
-    private String mainFolder = "/Users/BigMac/Documents/BP Calibrations/test_data/data/"; //Location of data.
+    private String mainFolder = "/Users/BigMac/Documents/BlackGold/test_data/data/"; //Location of data.
     private String subjectFolder = "phase3_subject2/";  // The particular subject.
     private int start = 0; // Start time (in seconds).
     private int end = 35; // End time (in seconds).

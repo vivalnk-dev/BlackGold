@@ -1,0 +1,79 @@
+---------
+Subject 1 (Cecilia)
+---------
+Medications: None
+Test 1 - Vert / 117 / 69 / 66
+Test 2 - Vert / 150 / 78 / 98
+Test 3 - Vert / 125 / 78 / 75	
+Test 4 - Vert / 121 / 72 / 69	
+Test 5 - Vert / 116 / 71 / 64	
+Test 6 - Vert / 124 / 74 / 62	
+Test 7 - Vert / 125 / 74 / 65	
+Test 8 - Vert / 148 / 80 / 93	
+
+---------
+Subject 2 (Huy)
+---------
+Medications: None
+Test 1 - Vert / 103 / 76 / 84
+Test 2 - Vert / 156 / 87 / 107
+Test 3 - Vert / 110 / 79 / 82	
+Test 4 - Vert / 110 / 72 / 85	
+Test 5 - Vert / 105 / 78 / 80	
+Test 6 - Vert / 111 / 82 / 76	
+Test 7 - Vert / 114 / 79 / 70	
+Test 8 - Vert / 129 / 84 / 66	
+Test 9 - Vert / 131 / 77 / 74	
+
+---------
+Subject 3
+---------
+Medications: Nifediphine (90mg), Hydrochlorothiazide (50mg), Hydralazine (10mg), Enalapril maleate (20mg), Aspirin (81mg)
+Test 1 - Hori / 149 / 93 / 73	
+Test 2 - Hori / 138 / 91 / 77
+Test 3 - Hori / 140 / 85 / 108	
+Test 4 - Hori / 157 / 92 / 113
+Test 5 - Hori / 142 / 97 / 88	
+Test 6 - Hori / 146 / 96 / 78	
+Test 7 - Hori / 140 / 92 / 72	
+Test 8 - Hori / 147 / 91 / 117	
+Test 9 - Hori / 148 / 87 / 86	
+
+---------
+Subject 4
+---------
+Medications: Hypertension (?)
+Test 1 - Hori / 143 / 81 / 71	
+Test 2 - Hori / 146 / 73 / 98	
+Test 3 - Hori / 131 / 68 / 82	
+Test 4 - Hori / 147 / 72 / 85	
+Test 5 - Hori / 125 / 71 / 85
+Test 6 - Hori / 165 / 74 / 95
+Test 7 - Hori / 140 / 74 / 90	
+
+---------
+Subject 5
+---------
+Medications: Atorvastatin (20mg)
+Test 1 - Hori / 191 / 135 / 88	
+Test 2 - Hori / 171 / 123 / 79
+Test 3 - Hori / 201 / 122 / 108	
+Test 4 - Hori / 185 / 125 / 94	
+Test 5 - Hori / 180 / 122 / 89	
+Test 6 - Hori / 177 / 136 / 92	
+Test 7 - Hori / 204 / 122 / 107
+Test 8 - Hori / 188 / 123 / 96	
+
+---------
+Subject 6
+---------
+Medications: None (Wheelchair-bound)
+Test 1 - Hori / 139 / 71 / 91
+Test 2 - Hori / 136 / 73 / 93	
+Test 3 - Hori / 139 / 80 / 89	
+Test 4 - Hori / 128 / 69 / 91	
+Test 5 - Hori / 118 / 67 / 91
+Test 6 - Hori / 129 / 75 / 93	
+Test 7 - Hori / 122 / 60 / 92	
+Test 8 - Hori / 122 / 69 / 93	
+Test 9 - Hori / 133 / 80 / 96	
