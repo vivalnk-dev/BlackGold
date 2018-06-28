@@ -103,6 +103,34 @@ public class Calculations {
         ArrayList<Double> zMag = integrate(zFiltered);
         ArrayList<Double> zCuMag = new ArrayList<Double>(Collections.nCopies(zFiltered.size(), 0.0));
         int width = sampleRate/25;
+        int adjWidth = 0;
+
+        for (int i = 0; i < zFiltered.size(); i++)
+        {
+            if (i < width)
+                adjWidth = i;
+            else if (i > zFiltered.size() - width)
+                adjWidth = zFiltered.size() - i;
+            else
+                adjWidth = width;
+
+            int start = i - adjWidth;
+            int end = i + adjWidth;
+            zCuMag.set(i, sumArray(zMag, start, end));
+        }
+
+        // Find all Z-peaks (systolic and diastolic)
+        ArrayList<Double> zPeak = new ArrayList<Double>(Collections.nCopies(zFiltered.size(), null));
+        ArrayList<Double> zPeakList = new ArrayList<>();
+        int width1 = (60 * sampleRate / heartRate / 4);
+        int width2 = sampleRate/50;
+
+
+
+
+
+        System.out.println("mag");
+        System.out.println(zCuMag.toString());
 
 
     }
@@ -118,5 +146,21 @@ public class Calculations {
         }
 
         return results;
+    }
+
+    public static double sumArray(ArrayList<Double> list, int start, int end)
+    {
+        double sum = 0;
+
+        while (start <= end)
+        {
+            if (start >= 0 && start < list.size())
+            {
+                sum += list.get(start);
+            }
+            start++;
+        }
+
+        return sum;
     }
 }

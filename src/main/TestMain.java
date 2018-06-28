@@ -3,6 +3,8 @@ import model.GroundTruth;
 import model.TestParameters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static utilities.Calculations.*;
 import static utilities.Utils.*;
@@ -36,6 +38,8 @@ public class TestMain {
 
         initParameters(); // Initialize variables
         calibrate();
+        //ArrayList<Double> x = new ArrayList<>(Arrays.asList(1.2, 7.3, 2.4, 5.5, 3.6, 6.7));
+        //detectPeaks(x, x, 500, 60);
 
     }
 
