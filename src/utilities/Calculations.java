@@ -1,8 +1,10 @@
 package utilities;
 
+import model.PeakList;
 import model.RawACC;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static utilities.Utils.readACC;
@@ -97,9 +99,9 @@ public class Calculations {
      * @param heartRate
      * @return Peaks object
      */
-    public static void detectPeaks(ArrayList<Double> zFiltered, ArrayList<Double> xFiltered, int sampleRate, int heartRate)
+    public static PeakList detectPeaks(ArrayList<Double> zFiltered, ArrayList<Double> xFiltered, int sampleRate, int heartRate)
     {
-        // Integrate the derivative of the signal
+        /** Integrate the derivative of the signal*/
         ArrayList<Double> zMag = integrate(zFiltered);
         ArrayList<Double> zCuMag = new ArrayList<Double>(Collections.nCopies(zFiltered.size(), 0.0));
         int width = sampleRate/25;
@@ -119,19 +121,87 @@ public class Calculations {
             zCuMag.set(i, sumArray(zMag, start, end));
         }
 
-        // Find all Z-peaks (systolic and diastolic)
+        /** Find all Z-peaks (systolic and diastolic)*/
         ArrayList<Double> zPeak = new ArrayList<Double>(Collections.nCopies(zFiltered.size(), null));
-        ArrayList<Double> zPeakList = new ArrayList<>();
+        ArrayList<Integer> zPeakList = new ArrayList<>();
         int width1 = (60 * sampleRate / heartRate / 4);
-        int width2 = sampleRate/50;
+        int width2 = sampleRate / 50;
 
+        for (int i = width1; i < zFiltered.size() - width1; i++)
+        {
+            if (zCuMag.get(i) >= findMax(zCuMag, 1-width1, 1+width1))
+            {
+                double maxVal = findMax(zFiltered, Math.max(0, i-width2), Math.min(zFiltered.size(), i + width2));
+                int idx = zFiltered.indexOf(maxVal);
+                zPeak.set(idx, maxVal+5);
+                zPeakList.add(idx);
+            }
+        }
 
+        /** Weed out the diastolic peaks*/
+        ArrayList<Integer> zPeakListClean = new ArrayList<>(Arrays.asList(zPeakList.get(0)));
+        for (int i = 1; i < zPeakList.size(); i++)
+        {
+            int distPrevPeak = zPeakList.get(i) - zPeakList.get(i-1);
+            if (distPrevPeak > 60 * sampleRate / heartRate / 2)
+                zPeakListClean.add(zPeakList.get(i));
+            else
+                zPeak.set(zPeakList.get(i), null);
+        }
+        zPeakList = zPeakListClean;
 
+        /** Find the Z1/Z2 peaks (systolic)*/
+        ArrayList<Double> z1Peak = new ArrayList<Double>(Collections.nCopies(zFiltered.size(), null));
+        ArrayList<Integer> z1PeakList = new ArrayList<>();
+        ArrayList<Double> z2Peak = new ArrayList<Double>(Collections.nCopies(zFiltered.size(), null));
+        ArrayList<Integer> z2PeakList = new ArrayList<>();
+        width2 = sampleRate / 25;
+        for (int i = width2; i < zFiltered.size() - width2; i++)
+        {
+            if (zPeak.get(i) != null)
+            {
+                double minValue = findMin(zFiltered, i - width2, i);
+                int idx = zFiltered.indexOf(minValue);
+                z1Peak.set(idx, findMin(zFiltered, i - width2, i) - 5);
+                z1PeakList.add(idx);
 
+                minValue = findMin(zFiltered, i, i + width2);
+                idx = zFiltered.indexOf(minValue);
+                z2Peak.set(idx, findMin(zFiltered, i, i + width2) - 5);
+                z2PeakList.add(idx);
+            }
+        }
+        
+        /** Find the X peaks (systolic)*/
+        ArrayList<Double> xPeak = new ArrayList<Double>(Collections.nCopies(zFiltered.size(), null));
+        ArrayList<Integer> xPeakList = new ArrayList<>();
+        width = sampleRate / 5;
+        for (int i = 0; i < zFiltered.size(); i++)
+        {
+            if (zPeak.get(i) != null)
+            {
+                double maxVal = findMax(xFiltered, i, i + width);
+                int idx = zFiltered.indexOf(maxVal);
+                xPeak.set(idx, findMax(xFiltered, i, i + width) + 5);
+                xPeakList.add(idx);
+            }
+        }
 
-        System.out.println("mag");
-        System.out.println(zCuMag.toString());
+        System.out.println("peak list ");
+        System.out.println(z1Peak.toString());
+        System.out.println(z2Peak.toString());
 
+        return new PeakList(zPeakList, z1PeakList, z2PeakList, xPeakList);
+
+    }
+
+    public static int calculateMTT (ArrayList<Integer> xPeakList, ArrayList<Integer> z1PeakList, int sr)
+    {
+        ArrayList<Integer> dist = divideArray(subtractArray(xPeakList, z1PeakList), sr * 1000);
+        double avgDist = findMean(dist);
+        double stdDist = findSTD(dist);
+
+        return 0;
 
     }
 
@@ -162,5 +232,90 @@ public class Calculations {
         }
 
         return sum;
+    }
+
+    public static double findMax (ArrayList<Double> arr, int start, int end)
+    {
+        double max = 0;
+
+        for (int i = start; i < end; i++)
+        {
+            if (i < arr.size() && i >= 0)
+            {
+                if (arr.get(i) > max)
+                    max = arr.get(i);
+            }
+
+        }
+
+        return max;
+    }
+
+    public static double findMin (ArrayList<Double> arr, int start, int end)
+    {
+        double min = Double.MAX_VALUE;
+
+        for (int i = start; i < end; i++)
+        {
+            if (i < arr.size() && i >= 0)
+            {
+                if (arr.get(i) < min)
+                    min = arr.get(i);
+            }
+
+        }
+
+        return min;
+    }
+
+    public static double findMean (ArrayList<Integer> arr)
+    {
+        double sum = 0;
+
+        for (int num : arr)
+        {
+            sum += num;
+        }
+
+        if (sum == 0)
+            return 0;
+
+        return sum/(double) arr.size();
+    }
+
+    public static double findSTD (ArrayList<Integer> table)
+    {
+        double mean = findMean(table);
+        double temp = 0;
+        for (int i = 0; i < table.size(); i++)
+        {
+            int val = table.get(i);
+            double squrDiffToMean = Math.pow(val - mean, 2);
+            temp += squrDiffToMean;
+        }
+        double meanOfDiffs = (double) temp / (double) (table.size());
+        return Math.sqrt(meanOfDiffs);
+    }
+
+    public static ArrayList<Integer> subtractArray (ArrayList<Integer> x, ArrayList<Integer> y)
+    {
+        ArrayList<Integer> z = new ArrayList<>();
+        for (int i = 0; i < x.size(); i++)
+        {
+            z.add(x.get(i) - y.get(i));
+        }
+
+        return z;
+    }
+
+    public static ArrayList<Integer> divideArray (ArrayList<Integer> arr, int num)
+    {
+        ArrayList<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < arr.size(); i++)
+        {
+            ans.add(arr.get(i)/num);
+        }
+
+        return ans;
     }
 }
