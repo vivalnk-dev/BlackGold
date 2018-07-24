@@ -51,9 +51,11 @@ public class RawACC {
         return z;
     }
 
-    @Override
     public String toString() {
-        return super.toString();
+        return "Time: " + this.getTime().toString() + "\n" +
+                "X: " + this.getX().toString() + "\n" +
+                "Y: " + this.getY().toString() + "\n" +
+                "Z: " + this.getZ().toString();
     }
 
     public void zeroOutTime() {
@@ -67,4 +69,5 @@ public class RawACC {
             time.set(i, (time.get(i)-firstNum) * (Math.pow(10, -5)));
         }
     }
+
 }

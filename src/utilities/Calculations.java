@@ -1,5 +1,6 @@
 package utilities;
 
+import model.Complex;
 import model.PeakList;
 import model.RawACC;
 
@@ -122,7 +123,7 @@ public class Calculations {
         }
 
         /** Find all Z-peaks (systolic and diastolic)*/
-        ArrayList<Double> zPeak = new ArrayList<Double>(Collections.nCopies(zFiltered.size(), null));
+        ArrayList<Double> zPeak = new ArrayList<>(Collections.nCopies(zFiltered.size(), null));
         ArrayList<Integer> zPeakList = new ArrayList<>();
         int width1 = (60 * sampleRate / heartRate / 4);
         int width2 = sampleRate / 50;
@@ -195,16 +196,21 @@ public class Calculations {
 
     }
 
-    public static int calculateMTT (ArrayList<Integer> xPeakList, ArrayList<Integer> z1PeakList, int sr)
+    public static ArrayList<Double> calculateMTT (ArrayList<Integer> xPeakList, ArrayList<Integer> z1PeakList, int sr)
     {
         ArrayList<Integer> dist = divideArray(subtractArray(xPeakList, z1PeakList), sr * 1000);
         double avgDist = findMean(dist);
         double stdDist = findSTD(dist);
 
-        return 0;
+        return shiftLineDown(dist, avgDist, stdDist);
 
     }
 
+    /**
+     * Helper method: calculates the difference between each element of an ArrayList and its neighbors.
+     * @param zFiltered
+     * @return ArrayList of difference
+     */
     public static ArrayList<Double> integrate (ArrayList<Double> zFiltered)
     {
         ArrayList<Double> results = new ArrayList<>();
@@ -218,6 +224,13 @@ public class Calculations {
         return results;
     }
 
+    /**
+     * Helper method: add all elements in an ArrayList given a range.
+     * @param list
+     * @param start
+     * @param end
+     * @return sum of range
+     */
     public static double sumArray(ArrayList<Double> list, int start, int end)
     {
         double sum = 0;
@@ -234,6 +247,13 @@ public class Calculations {
         return sum;
     }
 
+    /**
+     * Help method: find largest value in ArrayList
+     * @param arr
+     * @param start
+     * @param end
+     * @return largest value
+     */
     public static double findMax (ArrayList<Double> arr, int start, int end)
     {
         double max = 0;
@@ -251,6 +271,13 @@ public class Calculations {
         return max;
     }
 
+    /**
+     * Help method: find smallest value in ArrayList
+     * @param arr
+     * @param start
+     * @param end
+     * @return smallest value
+     */
     public static double findMin (ArrayList<Double> arr, int start, int end)
     {
         double min = Double.MAX_VALUE;
@@ -262,12 +289,15 @@ public class Calculations {
                 if (arr.get(i) < min)
                     min = arr.get(i);
             }
-
         }
-
         return min;
     }
 
+    /**
+     * Helper method: find average of ArrayList
+     * @param arr
+     * @return average
+     */
     public static double findMean (ArrayList<Integer> arr)
     {
         double sum = 0;
@@ -283,6 +313,11 @@ public class Calculations {
         return sum/(double) arr.size();
     }
 
+    /**
+     * Helper method: find standard deviation of ArrayList
+     * @param table
+     * @return standard deviation
+     */
     public static double findSTD (ArrayList<Integer> table)
     {
         double mean = findMean(table);
@@ -308,12 +343,47 @@ public class Calculations {
         return z;
     }
 
+    public static ArrayList<Double> shiftLineDown (ArrayList<Integer> x, double avg, double std)
+    {
+        ArrayList<Double> z = new ArrayList<>();
+        for (int i = 0; i < x.size(); i++)
+        {
+            double val = Math.abs(x.get(i) - avg);
+            if (val < 2 * std)
+                z.add(val);
+        }
+
+        return z;
+    }
+
     public static ArrayList<Integer> divideArray (ArrayList<Integer> arr, int num)
     {
         ArrayList<Integer> ans = new ArrayList<>();
         for (int i = 0; i < arr.size(); i++)
         {
             ans.add(arr.get(i)/num);
+        }
+
+        return ans;
+    }
+
+    public static ArrayList<Double> multiplyArray (ArrayList<Double> arr, double num)
+    {
+        ArrayList<Double> ans = new ArrayList<>();
+        for (int i = 0; i < arr.size(); i++)
+        {
+            ans.add(arr.get(i)*num);
+        }
+
+        return ans;
+    }
+
+    public static ArrayList<Complex> multiplyComplexArray (ArrayList<Complex> arr, double num)
+    {
+        ArrayList<Complex> ans = new ArrayList<>();
+        for (int i = 0; i < arr.size(); i++)
+        {
+            ans.add(arr.get(i).times(new Complex(num, 0)));
         }
 
         return ans;

@@ -1,6 +1,7 @@
 package main;
 import model.GroundTruth;
 import model.TestParameters;
+import utilities.Filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,8 +37,8 @@ public class TestMain {
      */
     public static void main(String[] args) {
 
-        initParameters(); // Initialize variables
-        calibrate();
+        //initParameters(); // Initialize variables
+        //calibrate();
         ArrayList<Double> x = new ArrayList<>(Arrays.asList(2.67482246E+00,-8.09008146E+00,-1.57525282E+01,-1.84178325E+01,
                 -1.60997894E+01,-1.06413804E+01,-4.93711950E+00,-1.83524134E+00,
                 -3.18392481E+00,-9.33931903E+00,-1.92070933E+01,-3.07007585E+01,
@@ -411,10 +412,10 @@ public class TestMain {
                 -1.37120725E+01, -6.39853235E+00, -2.45523404E+00, -1.79144172E+00,
                 -3.57302075E+00, -6.65690473E+00, -9.92135220E+00, -1.24317669E+01,
                 -1.35091214E+01, -1.27881952E+01, -1.02810644E+01, -6.39579631E+00));
-        detectPeaks(x, x, 500, 60);
+        //detectPeaks(x, x, 500, 60);
 
-        ArrayList<Integer> temp = new ArrayList<>(Arrays.asList(3, 7, 2, 5, 8, 3, 7, 12, 1, 15));
-        System.out.println(findSTD(temp));
+        ArrayList<Double> temp = new ArrayList<>(Arrays.asList(3.0, 7.0, 2.0, 5.0, 8.0, 3.0, 7.0, 12.0, 1.0, 15.0));
+        Filter.buttap(5);
 
     }
 
@@ -434,6 +435,7 @@ public class TestMain {
         //Read the ground truth model
         String truthFileName = mainFolder + "/" + subjectFolder + "truth.csv";
         truth = readTruth(truthFileName);
+        System.out.println(truth.toString());
     }
 
     /**
